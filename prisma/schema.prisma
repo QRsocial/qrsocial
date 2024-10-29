@@ -2,3 +2,29 @@ datasource db {
   provider = "postgresql"
   url = env("POSTGRES_PRISMA_URL") // uses a direct connection
 }
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Account {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  properties Property[]
+}
+
+model Property {
+  id                  Int      @id @default(autoincrement())
+  accountId           Int
+  socialMediaPlatform String
+  socialMediaUrl      String
+  createdAt           DateTime @default(now())
+  account             Account  @relation(fields: [accountId], references: [id])
+}
